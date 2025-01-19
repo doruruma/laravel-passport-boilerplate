@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -8,4 +9,10 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware('auth:api')->group(function () {});
+// authentication
+Route::post('user/sign-in', [UserController::class, 'signIn']);
+
+Route::middleware('auth:api')->group(function () {
+    // refresh token
+    Route::post('user/refresh-token', [UserController::class, 'refreshToken']);
+});

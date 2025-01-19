@@ -117,4 +117,10 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    // CLIENT_ID
+    'client_id' => env('CLIENT_ID'),
+
+    // CLIENT_SECRET
+    'client_secret' => env('CLIENT_SECRET')
+
 ];
