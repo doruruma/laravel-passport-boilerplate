@@ -2,27 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Helpers\ResponseHelper;
+use App\Helpers\ResponseHelper;
 use App\Http\Requests\UserRefreshTokenFormRequest;
 use App\Http\Requests\UserSignInFormRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 class UserController extends Controller
 {
     public function signIn(UserSignInFormRequest $request): JsonResponse
     {
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->username)->first();
         if (!$user)
             return ResponseHelper::error('Email tidak terdaftar!');
         $request->merge([
             'grant_type'    => 'password',
             'client_id'     => config('auth.client_id'),
             'client_secret' => config('auth.client_secret'),
-            'scope'         => 'user',
+            'scope'         => '',
         ]);
         $proxy = Request::create('oauth/token', 'POST');
         $response = json_decode(Route::dispatch($proxy)->getContent(), true);
@@ -37,7 +36,6 @@ class UserController extends Controller
 
     public function refreshToken(UserRefreshTokenFormRequest $request): JsonResponse
     {
-        $isAdmin = Auth::user()->is_admin;
         $request->merge([
             'grant_type'    => 'refresh_token',
             'client_id'     => config('auth.client_id'),

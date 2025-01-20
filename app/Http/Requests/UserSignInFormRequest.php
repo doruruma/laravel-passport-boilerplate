@@ -12,7 +12,7 @@ class UserSignInFormRequest extends CustomFormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
+            'username' => 'required|email',
             'password' => 'required',
         ];
     }
