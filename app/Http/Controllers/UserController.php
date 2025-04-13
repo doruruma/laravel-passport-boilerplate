@@ -6,16 +6,41 @@ use App\Helpers\ResponseHelper;
 use App\Http\Requests\UserRefreshTokenFormRequest;
 use App\Http\Requests\UserSignInFormRequest;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 class UserController extends Controller
 {
-
-    use RefreshDatabase;
-
+    /**
+     * @OA\Post(
+     *     path="/api/user/sign-in",
+     *     tags={"Authentication"},
+     *     summary="User Sign In",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"username", "password"},
+     *             @OA\Property(property="username", type="string", example="test@example.com"),
+     *             @OA\Property(property="password", type="string", example="password123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sign In Success",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token_type", type="string"),
+     *             @OA\Property(property="expires_in", type="integer"),
+     *             @OA\Property(property="access_token", type="string"),
+     *             @OA\Property(property="refresh_token", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid Email or Password"
+     *     )
+     * )
+     */
     public function signIn(UserSignInFormRequest $request): JsonResponse
     {
         $user = User::where('email', $request->username)->first();
@@ -38,6 +63,35 @@ class UserController extends Controller
         return response()->json($response, $code);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/user/refresh-token",
+     *     tags={"Authentication"},
+     *     summary="Refresh Token",
+     *     security={{"passport": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"refresh_token"},
+     *             @OA\Property(property="refresh_token", type="string", example="eyJ0eXAiOiJKV...")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Token",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token_type", type="string"),
+     *             @OA\Property(property="expires_in", type="integer"),
+     *             @OA\Property(property="access_token", type="string"),
+     *             @OA\Property(property="refresh_token", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Expired or Invalid Refresh Token"
+     *     )
+     * )
+     */
     public function refreshToken(UserRefreshTokenFormRequest $request): JsonResponse
     {
         $request->merge([
