@@ -6,12 +6,16 @@ use App\Helpers\ResponseHelper;
 use App\Http\Requests\UserRefreshTokenFormRequest;
 use App\Http\Requests\UserSignInFormRequest;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 class UserController extends Controller
 {
+
+    use RefreshDatabase;
+
     public function signIn(UserSignInFormRequest $request): JsonResponse
     {
         $user = User::where('email', $request->username)->first();
