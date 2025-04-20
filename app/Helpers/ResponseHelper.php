@@ -6,12 +6,12 @@ class ResponseHelper
 {
     public static function success($message, $code = 200)
     {
-        return response()->json(['message' => $message], $code);
+        return response()->json(['data' => ['message' => $message]], $code);
     }
 
     public static function error($message, $code = 500)
     {
-        return response()->json(['message' => $message], $code);
+        return response()->json(['data' => ['message' => $message]], $code);
     }
 
     public static function data($data, $code = 200)
