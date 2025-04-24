@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'storage' => [
+        'url' => env('STORAGE_URL'),
+    ],
+
 ];
